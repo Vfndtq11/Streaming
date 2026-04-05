@@ -2,447 +2,129 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Стример — панель управления</title>
+    <title>Панель стримера</title>
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
         body {
             background: #0a0a0a;
             color: #0f0;
-            font-family: 'Courier New', monospace;
+            font-family: monospace;
             padding: 20px;
+            text-align: center;
         }
-        .container {
-            max-width: 1400px;
-            margin: 0 auto;
-            display: grid;
-            grid-template-columns: 1fr 350px;
-            gap: 20px;
+        input, button {
+            padding: 12px;
+            margin: 10px;
+            font-size: 16px;
+            border-radius: 8px;
         }
-        .main-panel {
+        input {
             background: #1a1a1a;
-            border-radius: 20px;
-            padding: 20px;
-        }
-        .chat-panel {
-            background: #1a1a1a;
-            border-radius: 20px;
-            padding: 20px;
-            display: flex;
-            flex-direction: column;
-            height: calc(100vh - 40px);
-            position: sticky;
-            top: 20px;
-        }
-        h1, h2 {
-            margin-bottom: 20px;
             color: #0f0;
+            border: 1px solid #0f0;
+            width: 250px;
         }
         button {
             background: #0f0;
             color: black;
-            font-size: 18px;
-            padding: 12px 24px;
             border: none;
-            border-radius: 10px;
             cursor: pointer;
             font-weight: bold;
-            margin: 5px;
         }
-        button.danger {
-            background: #f00;
-            color: white;
+        .panel {
+            background: #1a1a1a;
+            padding: 30px;
+            border-radius: 20px;
+            max-width: 500px;
+            margin: 0 auto;
         }
-        input {
-            width: 100%;
-            padding: 12px;
-            margin: 10px 0;
-            background: black;
-            color: #0f0;
-            border: 1px solid #0f0;
-            border-radius: 5px;
-            font-size: 16px;
-        }
-        .status {
-            padding: 15px;
-            margin: 20px 0;
-            border-radius: 10px;
-            font-size: 18px;
-            text-align: center;
-        }
-        .online { background: #0f0; color: black; font-weight: bold; }
-        .offline { background: #f00; color: white; }
-        .preview {
-            margin: 20px 0;
-            border: 2px solid #0f0;
-            background: black;
-            text-align: center;
-        }
-        .preview img {
-            max-width: 100%;
-            max-height: 400px;
-        }
-        .viewers-count {
-            font-size: 24px;
-            text-align: center;
-            padding: 15px;
-            background: #0a0a0a;
-            border-radius: 10px;
-            margin: 20px 0;
-        }
-        .viewers-count span {
-            font-size: 48px;
-            font-weight: bold;
-            color: #0f0;
-        }
-        .chat-messages {
-            flex: 1;
-            overflow-y: auto;
-            background: #0a0a0a;
-            border-radius: 10px;
-            padding: 10px;
-            margin: 10px 0;
-            min-height: 300px;
-        }
-        .message {
-            padding: 8px;
-            margin: 5px 0;
-            border-radius: 5px;
-            word-break: break-word;
-        }
-        .message.streamer {
-            background: #0f0220;
-            border-left: 3px solid #0f0;
-            color: #0f0;
-        }
-        .message.viewer {
-            background: #1a1a2e;
-            border-left: 3px solid #00f;
-            color: #fff;
-        }
-        .message-system {
-            background: #333;
-            color: #ff0;
-            font-style: italic;
-            text-align: center;
-        }
-        .chat-input-area {
-            display: flex;
-            gap: 10px;
-            margin-top: 10px;
-        }
-        .chat-input-area input {
-            flex: 1;
-            margin: 0;
-        }
-        .chat-input-area button {
-            margin: 0;
-            padding: 12px 20px;
-        }
-        .streamer-badge {
-            color: #0f0;
-            font-weight: bold;
-        }
-        .step {
-            background: #0a0a0a;
-            padding: 15px;
-            margin: 15px 0;
-            border-radius: 10px;
-        }
-        .share-link {
-            background: #0a0a0a;
-            padding: 15px;
-            border-radius: 10px;
+        .link-box {
             margin-top: 20px;
+            background: #0a0a0a;
+            padding: 15px;
+            border-radius: 10px;
             word-break: break-all;
-        }
-        code {
-            background: black;
-            padding: 5px;
-            display: block;
-            margin: 10px 0;
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        <div class="main-panel">
-            <h1>🎥 ПАНЕЛЬ СТРИМЕРА</h1>
+    <div class="panel">
+        <h1>🎥 ПАНЕЛЬ СТРИМЕРА</h1>
+        
+        <input type="password" id="pass" placeholder="Пароль">
+        <button onclick="login()">Войти</button>
+        
+        <div id="adminPanel" style="display: none; margin-top: 30px;">
+            <h3>Настройки стрима</h3>
             
-            <div id="loginPanel">
-                <div class="step">
-                    <h3>🔐 Вход в панель стримера</h3>
-                    <input type="password" id="streamerPassword" placeholder="Введите пароль">
-                    <button onclick="loginStreamer()">Войти</button>
+            <p><strong>IP твоего компьютера:</strong></p>
+            <input type="text" id="serverIp" placeholder="192.168.1.100">
+            <p><strong>Stream Key (из PRISM):</strong></p>
+            <input type="text" id="streamKey" placeholder="moto">
+            
+            <button onclick="generateLinks()">💾 Сгенерировать ссылки</button>
+            
+            <div id="links" style="display: none;">
+                <div class="link-box">
+                    <h3>🔗 Ссылка для зрителей:</h3>
+                    <code id="viewerLink"></code>
+                    <br><br>
+                    <button onclick="copyLink('viewerLink')">📋 Копировать</button>
                 </div>
-            </div>
-
-            <div id="streamPanel" style="display: none;">
-                <div class="step">
-                    <h3>📱 Шаг 1: Установи IP Webcam на телефон</h3>
-                    <p>Скачай из Play Market: <strong>IP Webcam</strong> (бесплатно)</p>
+                <div class="link-box">
+                    <h3>📱 Ссылка на твою панель:</h3>
+                    <code id="streamerLink"></code>
+                    <br><br>
+                    <button onclick="copyLink('streamerLink')">📋 Копировать</button>
                 </div>
-
-                <div class="step">
-                    <h3>📱 Шаг 2: Настрой IP Webcam</h3>
-                    <p>1. Открой приложение → нажми "Start Server"<br>
-                    2. Приложение покажет URL типа: <code id="exampleUrl">http://192.168.1.100:8080</code><br>
-                    3. Скопируй ЭТУ ссылку и вставь ниже</p>
-                    <input type="text" id="cameraUrl" placeholder="http://192.168.1.100:8080/video">
-                    <button onclick="startStream()">▶ Начать трансляцию</button>
-                    <button class="danger" onclick="stopStream()">⏹ Остановить</button>
-                </div>
-
-                <div id="status" class="status offline">⚫ Не в эфире</div>
-
-                <div class="viewers-count">
-                    👥 Зрителей онлайн: <span id="viewerCount">0</span>
-                </div>
-
-                <div class="preview" id="previewArea" style="display: none;">
-                    <h3>📺 Предпросмотр</h3>
-                    <img id="streamPreview">
-                </div>
-
-                <div class="share-link" id="shareLink" style="display: none;">
-                    <h3>🔗 Дай зрителям эту ссылку:</h3>
-                    <code id="streamLink"></code>
-                    <button onclick="copyLink()">📋 Копировать</button>
-                    <div id="qrcode" style="margin-top: 10px;"></div>
-                </div>
-            </div>
-        </div>
-
-        <div class="chat-panel">
-            <h2>💬 ЧАТ</h2>
-            <div class="chat-messages" id="chatMessages">
-                <div class="message message-system">📡 Чат готов. Начни стрим чтобы общаться</div>
-            </div>
-            <div class="chat-input-area">
-                <input type="text" id="chatInput" placeholder="Написать в чат..." disabled>
-                <button onclick="sendMessage()" id="sendBtn" disabled>📨</button>
-            </div>
-            <div style="font-size: 12px; margin-top: 10px; text-align: center; color: #666;">
-                💡 Сообщения видят все зрители
             </div>
         </div>
     </div>
 
     <script>
-        // Конфиг
-        const STREAMER_PASSWORD = "moto2024";  // 🎯 Поменяй пароль на свой!
-        let isStreaming = false;
-        let streamUrl = "";
-        let intervalId = null;
-        let streamerLoggedIn = false;
-
-        // Глобальное хранилище (через localStorage + событие)
-        let viewers = new Set();
-
-        function loginStreamer() {
-            const password = document.getElementById('streamerPassword').value;
-            if (password === STREAMER_PASSWORD) {
-                streamerLoggedIn = true;
-                document.getElementById('loginPanel').style.display = 'none';
-                document.getElementById('streamPanel').style.display = 'block';
-                updateChatSystemMessage('✅ Стример вошёл в панель');
-                enableChat(true);
-                loadSavedStream();
+        const PASS = "moto2024";
+        
+        function login() {
+            if (document.getElementById('pass').value === PASS) {
+                document.getElementById('adminPanel').style.display = 'block';
+                loadSaved();
             } else {
-                alert('Неверный пароль!');
+                alert('Неверный пароль');
             }
         }
-
-        function enableChat(enabled) {
-            const chatInput = document.getElementById('chatInput');
-            const sendBtn = document.getElementById('sendBtn');
-            chatInput.disabled = !enabled;
-            sendBtn.disabled = !enabled;
+        
+        function loadSaved() {
+            const savedIp = localStorage.getItem('serverIp');
+            const savedKey = localStorage.getItem('streamKey');
+            if (savedIp) document.getElementById('serverIp').value = savedIp;
+            if (savedKey) document.getElementById('streamKey').value = savedKey;
+            if (savedIp && savedKey) generateLinks();
         }
-
-        function loadSavedStream() {
-            const savedUrl = localStorage.getItem('streamUrl');
-            if (savedUrl) {
-                document.getElementById('cameraUrl').value = savedUrl;
-                if (localStorage.getItem('isStreaming') === 'true') {
-                    startStream();
-                }
-            }
-        }
-
-        function startStream() {
-            const cameraUrl = document.getElementById('cameraUrl').value.trim();
-            if (!cameraUrl) {
-                alert('Введи URL из IP Webcam!');
+        
+        function generateLinks() {
+            const ip = document.getElementById('serverIp').value.trim();
+            const key = document.getElementById('streamKey').value.trim();
+            
+            if (!ip || !key) {
+                alert('Введи IP и Stream Key!');
                 return;
             }
-
-            // Форматируем URL
-            let videoUrl = cameraUrl;
-            if (!videoUrl.includes('/video') && !videoUrl.includes('/mjpeg')) {
-                videoUrl = videoUrl.replace(/\/$/, '') + '/video';
-            }
-
-            streamUrl = videoUrl;
-            isStreaming = true;
-
-            // Сохраняем
-            localStorage.setItem('streamUrl', streamUrl);
-            localStorage.setItem('isStreaming', 'true');
-            sessionStorage.setItem('streamActive', 'true');
-
-            // Предпросмотр
-            const previewImg = document.getElementById('streamPreview');
-            previewImg.src = streamUrl + '?_=' + Date.now();
-            document.getElementById('previewArea').style.display = 'block';
             
-            intervalId = setInterval(() => {
-                if (previewImg.complete) {
-                    previewImg.src = streamUrl + '?_=' + Date.now();
-                }
-            }, 100);
-
-            document.getElementById('status').className = 'status online';
-            document.getElementById('status').innerHTML = '🟢 В ЭФИРЕ! Трансляция идёт';
+            localStorage.setItem('serverIp', ip);
+            localStorage.setItem('streamKey', key);
             
-            showShareLink();
-            updateViewerCount();
-            updateChatSystemMessage('🎬 Стример начал трансляцию!');
+            const baseUrl = window.location.origin;
+            const viewerUrl = `${baseUrl}/index.html?stream=${ip}&key=${key}`;
+            const streamerUrl = `${baseUrl}/streamer.html`;
             
-            // Запускаем обновление счётчика
-            startViewerCounter();
+            document.getElementById('viewerLink').innerHTML = viewerUrl;
+            document.getElementById('streamerLink').innerHTML = streamerUrl;
+            document.getElementById('links').style.display = 'block';
         }
-
-        function stopStream() {
-            if (intervalId) {
-                clearInterval(intervalId);
-                intervalId = null;
-            }
-            isStreaming = false;
-            localStorage.removeItem('streamUrl');
-            localStorage.removeItem('isStreaming');
-            sessionStorage.removeItem('streamActive');
-            
-            document.getElementById('status').className = 'status offline';
-            document.getElementById('status').innerHTML = '⚫ Стрим остановлен';
-            document.getElementById('previewArea').style.display = 'none';
-            document.getElementById('shareLink').style.display = 'none';
-            
-            updateChatSystemMessage('🔴 Стример остановил трансляцию');
-            
-            // Очищаем зрителей
-            viewers.clear();
-            updateViewerCount();
-        }
-
-        function showShareLink() {
-            const baseUrl = window.location.href.replace('streamer.html', 'viewer.html');
-            const fullUrl = `${baseUrl}?stream=${encodeURIComponent(streamUrl)}`;
-            document.getElementById('streamLink').textContent = fullUrl;
-            document.getElementById('shareLink').style.display = 'block';
-            
-            // Простой QR
-            const qrDiv = document.getElementById('qrcode');
-            qrDiv.innerHTML = '';
-            const qrImg = document.createElement('img');
-            qrImg.src = `https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=${encodeURIComponent(fullUrl)}`;
-            qrDiv.appendChild(qrImg);
-        }
-
-        function copyLink() {
-            const link = document.getElementById('streamLink').textContent;
-            navigator.clipboard.writeText(link);
+        
+        function copyLink(elementId) {
+            const text = document.getElementById(elementId).innerHTML;
+            navigator.clipboard.writeText(text);
             alert('Ссылка скопирована!');
-        }
-
-        // Счётчик зрителей
-        function startViewerCounter() {
-            setInterval(() => {
-                if (isStreaming) {
-                    updateViewerCount();
-                }
-            }, 3000);
-        }
-
-        function updateViewerCount() {
-            // Получаем количество уникальных зрителей из localStorage
-            const viewersData = localStorage.getItem('activeViewers');
-            if (viewersData) {
-                const viewersList = JSON.parse(viewersData);
-                viewers = new Set(viewersList);
-                document.getElementById('viewerCount').textContent = viewers.size;
-            }
-        }
-
-        // Чат
-        function sendMessage() {
-            const input = document.getElementById('chatInput');
-            const message = input.value.trim();
-            if (!message) return;
-            
-            const chatMessage = {
-                sender: 'streamer',
-                name: '🎥 СТРИМЕР',
-                message: message,
-                time: new Date().toLocaleTimeString()
-            };
-            
-            saveMessage(chatMessage);
-            input.value = '';
-        }
-
-        function saveMessage(msg) {
-            const messages = JSON.parse(localStorage.getItem('chatMessages') || '[]');
-            messages.push(msg);
-            // Оставляем последние 100 сообщений
-            if (messages.length > 100) messages.shift();
-            localStorage.setItem('chatMessages', JSON.stringify(messages));
-            
-            // Обновляем чат у всех
-            updateChatDisplay();
-        }
-
-        function updateChatDisplay() {
-            const messagesDiv = document.getElementById('chatMessages');
-            const messages = JSON.parse(localStorage.getItem('chatMessages') || '[]');
-            
-            messagesDiv.innerHTML = '';
-            messages.forEach(msg => {
-                const msgDiv = document.createElement('div');
-                msgDiv.className = `message ${msg.sender === 'streamer' ? 'streamer' : 'viewer'}`;
-                msgDiv.innerHTML = `<strong>${msg.name}:</strong> ${msg.message}<br><small style="font-size: 10px;">${msg.time}</small>`;
-                messagesDiv.appendChild(msgDiv);
-            });
-            messagesDiv.scrollTop = messagesDiv.scrollHeight;
-        }
-
-        function updateChatSystemMessage(text) {
-            const systemMsg = {
-                sender: 'system',
-                name: '📢 СИСТЕМА',
-                message: text,
-                time: new Date().toLocaleTimeString()
-            };
-            saveMessage(systemMsg);
-        }
-
-        // Слушаем изменения в чате
-        setInterval(() => {
-            updateChatDisplay();
-        }, 500);
-
-        // Инициализация
-        if (localStorage.getItem('isStreaming') === 'true') {
-            // Автоматически показываем интерфейс если был стрим
-            setTimeout(() => {
-                if (!streamerLoggedIn && document.getElementById('streamerPassword').value === STREAMER_PASSWORD) {
-                    // Можно добавить авто-вход по сохранённой сессии
-                }
-            }, 100);
         }
     </script>
 </body>
